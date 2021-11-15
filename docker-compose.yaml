@@ -1,0 +1,37 @@
+version: "3.4"
+services:
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch
+    networks:
+      trivial_example:
+        aliases:
+          - es
+    expose:
+      - "9200"
+      - "9300"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+
+  zipkin:
+    image: openzipkin/zipkin
+    restart: always
+    networks:
+      trivial_example:
+        aliases:
+          - zipkin
+    expose:
+      - "9411"
+    ports:
+      - "9411:9411"
+    environment:
+      - DEBUG=1
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://es:9200
+
+networks:
+  trivial_example: {}
