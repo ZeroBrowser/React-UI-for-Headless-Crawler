@@ -1,37 +1,33 @@
 version: "3.4"
 services:
   
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
-    container_name: elasticsearch
+  crawler:
+    build: https://github.com/ZeroBrowser/Headless-Crawler.git#main
     networks:
-      trivial_example:
+      my_network:
         aliases:
-          - es
+          - crawler
     expose:
-      - "9200"
-      - "9300"
+      - "5010"
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "5010:5010"
     environment:
-      - discovery.type=single-node
+      - ASPNETCORE_URLS=http://+:5010
 
-  zipkin:
-    image: openzipkin/zipkin
+  react:
+    build:
+      context: ./my-app-typescript
+      dockerfile: Dockerfile
     restart: always
     networks:
-      trivial_example:
+      my_network:
         aliases:
-          - zipkin
+          - react
     expose:
-      - "9411"
+      - "8080"
+      - "80"
     ports:
-      - "9411:9411"
-    environment:
-      - DEBUG=1
-      - STORAGE_TYPE=elasticsearch
-      - ES_HOSTS=http://es:9200
+      - "8080:80"
 
 networks:
-  trivial_example: {}
+  my_network: {}

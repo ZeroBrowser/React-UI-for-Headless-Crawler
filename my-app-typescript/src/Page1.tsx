@@ -67,7 +67,7 @@ const Page1 = () => {
       body: JSON.stringify(postBody)
     };
 
-    var url = "http://localhost:5010/api/Crawler";
+    var url = "http://crawler:5010/api/Crawler";
 
     fetch(url, requestMetadata)
       .then(response => response.json())
@@ -84,7 +84,7 @@ const Page1 = () => {
       }
     };
 
-    var url = "http://localhost:5010/api/Crawler/getstructureddata";
+    var url = "http://crawler:5010/api/Crawler/getstructureddata";
 
     fetch(url, requestMetadata)
       .then(response => response.json())
