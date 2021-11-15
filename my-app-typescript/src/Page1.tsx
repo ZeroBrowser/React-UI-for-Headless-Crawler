@@ -40,17 +40,27 @@ const Page1 = () => {
   const initialRenderTree: RenderTree = { value: { url: "", total: 0 } };
   const [data, setData] = useState(initialRenderTree);
   const [url, setUrl] = useState("https://www.0browser.com");
+  const [expanded, setExpanded] = useState([""]);
 
-  const renderTree = (nodes: RenderTree) => (
-    <TreeItem key={nodes.value.url} nodeId={nodes.value.url} label={nodes.value.url}>
-      {Array.isArray(nodes.children)
-        ? nodes.children.map((node) => renderTree(node))
-        : null}
-    </TreeItem>
-  );
+  const renderTree = function (nodes: RenderTree) {
+
+    if (nodes == null || nodes.value == null || nodes.value.url == null) {
+      return;
+    }
+
+    return (
+      <TreeItem key={nodes.value.url} nodeId={nodes.value.url} label={nodes.value.url}>
+        {Array.isArray(nodes.children)
+          ? nodes.children.map((node) => renderTree(node))
+          : null}
+      </TreeItem>
+    );
+  };
 
 
-
+  const handleToggle = (event: any, nodeIds: Array<string>) => {
+    setExpanded(nodeIds);
+  };
 
   const crawlSite = (typedUrl: any) => {
 
@@ -91,6 +101,16 @@ const Page1 = () => {
       .then((renderTree: RenderTree) => {
         if (renderTree != null) {
           setData(renderTree);
+
+          fetch("https://localhost:44326/api/Crawler", requestMetadata)
+            .then(response => response.json())
+            .then((listOfUrls: Array<string>) => {
+              if (listOfUrls != null) {
+                setExpanded(listOfUrls);
+              }
+            });
+
+
         }
       });
 
@@ -122,6 +142,8 @@ const Page1 = () => {
           defaultExpanded={['root']}
           defaultExpandIcon={<ChevronRightIcon />}
           sx={{ flexGrow: 1 }}
+          expanded={expanded}
+          onNodeToggle={handleToggle}
         >
           {renderTree(data)}
         </TreeView>
