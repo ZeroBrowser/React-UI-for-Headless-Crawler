@@ -118,7 +118,7 @@ const Page1 = () => {
   };
 
   useEffect(() => {
-    let interval = setInterval(() => getCrawledData(), (1000 * 5));
+    let interval = setInterval(() => getCrawledData(), (1000 * 1));
 
     //destroy interval on unmount
     return () => clearInterval(interval);
