@@ -1,6 +1,6 @@
 version: "3.4"
 services:
-  
+
   crawler:
     build: https://github.com/ZeroBrowser/Headless-Crawler.git#main
     networks:
@@ -9,10 +9,17 @@ services:
           - crawler
     expose:
       - "5010"
+      - "44326"
     ports:
       - "5010:5010"
+      - "44326:44326"
     environment:
-      - ASPNETCORE_URLS=http://+:5010
+      - ASPNETCORE_URLS=http://+:5010;https://+:44326
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=green
+      - ASPNETCORE_HTTPS_PORT=44326
+    volumes:
+      - ./:/https:ro
 
   react:
     build:
