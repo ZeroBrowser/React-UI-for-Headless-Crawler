@@ -63,14 +63,29 @@ const Page1 = () => {
   const handleToggle = (event: any, nodeIds: Array<string>) => {
     setExpanded(nodeIds);
   };
+  
+  function validURL(str: string) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return !!pattern.test(str);
+  }
 
   const crawlSite = (typedUrl: any) => {
+
+    if (typedUrl == null || typedUrl.length == 0 || !validURL(typedUrl)) {
+      return;
+    }
+
     setCrawling(false);
     setCrawlerDown(false);
 
     var postBody = {
       "seedUrls": [typedUrl],
-      "headlessBrowserUrl": "wss://proxy.0browser.com?token=e281e816-82ee-4c6e-ba1c-8f7ec448ab72"
+      "headlessBrowserUrl": "wss://proxy.0browser.com?token=e281e816-82ee-4c6e-ba1c-8f7ec448ab72&timeout=260000"
     }
 
     const requestMetadata = {
@@ -84,7 +99,7 @@ const Page1 = () => {
     var url = "https://localhost:44326/api/Crawler";
 
     fetch(url, requestMetadata)
-      .then(response => setCrawling(true))     
+      .then(response => setCrawling(true))
       .catch(error => {
         setCrawlerDown(true);
       });
