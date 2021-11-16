@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 //import { Slider, Button } from '@material-ui/core'
-import { Button, TextField, Box, BoxProps } from '@mui/material';
+import { Button, TextField, Box, BoxProps, Snackbar } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { TreeItem, TreeView } from '@mui/lab';
@@ -41,6 +41,8 @@ const Page1 = () => {
   const [data, setData] = useState(initialRenderTree);
   const [url, setUrl] = useState("https://www.0browser.com");
   const [expanded, setExpanded] = useState([""]);
+  const [crawling, setCrawling] = useState(false);
+  const [crawlerDown, setCrawlerDown] = useState(false);
 
   const renderTree = function (nodes: RenderTree) {
 
@@ -63,6 +65,8 @@ const Page1 = () => {
   };
 
   const crawlSite = (typedUrl: any) => {
+    setCrawling(false);
+    setCrawlerDown(false);
 
     var postBody = {
       "seedUrls": [typedUrl],
@@ -82,38 +86,46 @@ const Page1 = () => {
     fetch(url, requestMetadata)
       .then(response => response.json())
       .then((data: RenderTree) => {
+        setCrawling(true);
+      })
+      .catch(error => {
+        setCrawlerDown(true);
       });
   };
 
   const getCrawledData = () => {
 
-    const requestMetadata = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    var url = "https://localhost:44326/api/Crawler/getstructureddata";
-
-    fetch(url, requestMetadata)
-      .then(response => response.json())
-      .then((renderTree: RenderTree) => {
-        if (renderTree != null) {
-          setData(renderTree);
-
-          fetch("https://localhost:44326/api/Crawler", requestMetadata)
-            .then(response => response.json())
-            .then((listOfUrls: Array<string>) => {
-              if (listOfUrls != null) {
-                setExpanded(listOfUrls);
-              }
-            });
-
-
+    if (crawling === true) {
+      const requestMetadata = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
         }
-      });
+      };
 
+      var url = "https://localhost:44326/api/Crawler/getstructureddata";
+
+      fetch(url, requestMetadata)
+        .then(response => response.json())
+        .then((renderTree: RenderTree) => {
+          if (renderTree != null) {
+            setData(renderTree);
+
+            fetch("https://localhost:44326/api/Crawler", requestMetadata)
+              .then(response => response.json())
+              .then((listOfUrls: Array<string>) => {
+                if (listOfUrls != null) {
+                  setExpanded(listOfUrls);
+                }
+              })
+              .catch(error => {
+                setCrawlerDown(true);
+              });
+
+
+          }
+        });
+    }
 
   };
 
@@ -126,7 +138,7 @@ const Page1 = () => {
 
   return (
     <div style={{ width: '100%' }}>
-      <h3>CrawlMySite.com</h3>
+      <h3>crawl your landing page!</h3>
 
       <Box sx={{ display: 'flex', p: 1, bgcolor: 'background.paper' }}>
         <TextField sx={{ flexGrow: 1, m: 2 }} id="outlined-basic" label="Outlined" variant="outlined" value={url} onChange={e => setUrl(e.target.value)} />
@@ -149,7 +161,11 @@ const Page1 = () => {
         </TreeView>
       </Box>
 
-
+      <Snackbar
+        open={crawlerDown}
+        autoHideDuration={6000}
+        message="App can't call the crawler, make sure its running!"
+      />
     </div>
   );
 }
