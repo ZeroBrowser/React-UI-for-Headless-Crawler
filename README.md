@@ -16,6 +16,10 @@ This demo consists of a crawler backend written in C#/.net core 6.0 and a React 
 ### React's url: 
 > http://localhost:8080 
 
+### Crawler's swagger url: 
+> https://localhost:44326/swagger/index.html
+> Please accept ssl warning and continue.
+
 5. You can click on Crawl button to start crawling 0browser or alternatively you can type in your url to crawl.
 
 ## Screenshots
