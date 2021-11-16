@@ -13,7 +13,7 @@ This demo consists of a C# crawler backend and a React Typescript/Javascript Fro
 > **docker-compose up** 
 4. Once applications are running you can access them by going to the URL associated to each service.
 
-### URL for Crawler is: 
+### Crawler's url: 
 > https://localhost:44326/swagger
-### URL for React is: 
+### React's url: 
 > http://localhost:8080 
