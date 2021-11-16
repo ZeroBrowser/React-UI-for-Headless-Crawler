@@ -21,6 +21,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - ./:/https:ro
+    depends_on:
+      - "react"
 
   react:
     build:
