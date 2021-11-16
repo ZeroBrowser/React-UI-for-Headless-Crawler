@@ -84,10 +84,7 @@ const Page1 = () => {
     var url = "https://localhost:44326/api/Crawler";
 
     fetch(url, requestMetadata)
-      .then(response => response.json())
-      .then((data: RenderTree) => {
-        setCrawling(true);
-      })
+      .then(response => setCrawling(true))     
       .catch(error => {
         setCrawlerDown(true);
       });
