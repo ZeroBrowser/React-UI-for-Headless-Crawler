@@ -85,7 +85,7 @@ const Page1 = () => {
 
     var postBody = {
       "seedUrls": [typedUrl],
-      "headlessBrowserUrl": "wss://proxy.0browser.com?token=e281e816-82ee-4c6e-ba1c-8f7ec448ab72&timeout=260000"
+      "headlessBrowserUrl": "wss://proxy.0browser.com?token={token}&timeout=260000"
     }
 
     const requestMetadata = {
